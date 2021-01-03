@@ -5,3 +5,6 @@
 
 ## SAS Code:
 ### Data Preparation in SAS
+
+## SQL Code:
+### SQLlite Queries on the Dataset of a Digital Music Store
