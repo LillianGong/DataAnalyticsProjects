@@ -18,7 +18,7 @@
 #### SQLlite Queries on the Dataset of a Digital Music Store
 
 
-## data
+## data file:
 #### online_clean.csv - Customer Lifetime Value (CLV) Calculation based on RFM
 #### german_credit.csv - Prediction on Credit Risk
 #### USDA_Macronutrients.csv, USDA_Micronutrients.csv - Linear Regression in R
