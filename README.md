@@ -2,6 +2,7 @@
 
 ## Python Code:
 ### Customer Lifetime Value (CLV) Calculation based on RFM
+### Prediction on Credit Risk
 
 ## SAS Code:
 ### Data Preparation in SAS
