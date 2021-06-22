@@ -1,0 +1,160 @@
+---
+title: 'Linear Regression Model in R'
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+
+Data Cleaning
+
+#### 1. Read the csv files in the folder. 
+```{r}
+
+df_mac <- read.csv("E:/01 Ryerson - Data Analytics Program/CMTH 642 Data Analytics - advanced methods/Assignment/USDA_Macronutrients.csv",
+        header = T,
+        stringsAsFactors = F,
+        na.strings = c(" ","NA"))
+head(df_mac)
+
+df_mic <- read.csv("E:/01 Ryerson - Data Analytics Program/CMTH 642 Data Analytics - advanced methods/Assignment/USDA_Micronutrients.csv",
+        header = T,
+        stringsAsFactors = F,
+        na.strings = c(" ","NA"))
+head(df_mic)
+
+```
+
+#### 2. Merge the data frames using the variable "ID". Name the Merged Data Frame "USDA". 
+```{r}
+
+USDA <- merge(df_mac,df_mic,by="ID")
+head(USDA)
+```
+
+#### 3. Check the datatypes of the attributes. Delete the commas in the Sodium and Potasium records. Assign Sodium and Potasium as numeric data types. 
+```{r}
+
+str(USDA)
+
+USDA$Sodium <- as.numeric(gsub(",","",USDA$Sodium))
+USDA$Potassium <- as.numeric(gsub(",","",USDA$Potassium))
+str(USDA)
+
+```
+
+#### 4. Remove records (rows) with missing values in more than 4 attributes (columns).
+```{r}
+
+USDA_clean <- USDA[rowSums(is.na(USDA))<5,]
+str(USDA_clean)
+
+#6887 records remain in the data frame. 
+```
+
+#### 5. For records with missing values for Sugar, Vitamin E and Vitamin D, replace missing values with mean value for the respective variable. 
+```{r}
+
+USDA_clean$Sugar[is.na(USDA_clean$Sugar)] <- mean(USDA_clean$Sugar,na.rm = T)
+USDA_clean$VitaminE[is.na(USDA_clean$VitaminE)] <- mean(USDA_clean$VitaminE,na.rm = T)
+USDA_clean$VitaminD[is.na(USDA_clean$VitaminD)] <- mean(USDA_clean$VitaminD,na.rm = T)
+
+sum(is.na(USDA_clean$Sugar))
+sum(is.na(USDA_clean$VitaminE))
+sum(is.na(USDA_clean$VitaminD))
+```
+
+#### 6. With a single line of code, remove all remaining records with missing values. Name the new Data Frame "USDAclean".
+```{r}
+# INSERT YOUR ANSWER HERE
+USDAclean <- na.omit(USDA_clean)
+# USDAclean<- USDA_clean[complete.cases(USDA_clean),]
+nrow(USDAclean)
+# 6310 records remain in the data frame.
+```
+
+#### 7. Create a boxplot to illustrate the distribution of values for TotalFat, Protein and Carbohydrate. 
+```{r}
+
+par(mfrow=c(1,3))
+boxplot(USDAclean$TotalFat,main="Total Fat",col = "red")
+boxplot(USDAclean$Protein, main = "Protein",col ="yellow")
+boxplot(USDAclean$Carbohydrate, main = "Carbohydrate", col = "blue")
+```
+
+#### 8. Create a scatterplot to illustrate the relationship between a food's TotalFat content and its Calorie content. 
+```{r}
+
+plot(USDAclean$TotalFat, USDAclean$Calories, main = " Relationship beteween Total Fat and Calorie", xlab = "total fat", ylab = "calories",col="blue")
+```
+
+#### 9. Add a variable to the data frame that takes value 1 if the food has higher sodium than average, 0 otherwise. Call this variable HighSodium. Do the same for High Calories, High Protein, High Sugar, and High Fat.
+```{r}
+
+USDAclean$HighSodium <- ifelse(USDAclean$Sodium > mean(USDAclean$Sodium,na.rm = T),1,0)
+table(USDAclean$HighSodium)
+
+USDAclean$HighCalories <- ifelse(USDAclean$Calories > mean(USDAclean$Calories,na.rm = T),1,0)
+table(USDAclean$HighCalories)
+
+USDAclean$HighProtein <- ifelse(USDAclean$Protein > mean(USDAclean$Protein,na.rm = T),1,0)
+table(USDAclean$HighProtein)
+
+USDAclean$HighSugar <- ifelse(USDAclean$Sugar > mean(USDAclean$Sugar,na.rm = T),1,0)
+table(USDAclean$HighSugar)
+
+USDAclean$HighTotalFat <- ifelse(USDAclean$TotalFat > mean(USDAclean$TotalFat,na.rm = T),1,0)
+table(USDAclean$HighTotalFat)
+
+# 644 foods with high sodium and high fat.
+nrow(USDAclean[(USDAclean$HighSodium == 1) & (USDAclean$HighTotalFat == 1),])
+```
+
+
+
+Exploratory Data Analysis
+
+#### 1. Visualize the correlation among Calories, Protein, Total Fat, Carbohydrate, Sodium and Cholesterol. 
+```{r}
+# INSERT YOUR CODE HERE.
+pairs(~Calories+Protein+TotalFat+Carbohydrate+Sodium+Cholesterol,data=USDAclean,main="Correlation Among Variables")
+```
+
+#### 2. Check if the correlation between Calories and Total Fat statistically significant? 
+```{r}
+
+cor.test(df$Calories,df$TotalFat)
+# yes, the correlation is statistically significant. Because the cor is 0.8 which indicates a strong positive correlation (close to 1),and p-value is much less than 0.05.
+```
+
+Data Modeling
+
+#### 1. Create a Linear Regression Model, using Calories as the dependent variable Protein, Total Fat, Carbohydrate, Sodium and Cholesterol as the independent variables. 
+```{r}
+# INSERT YOUR CODE HERE.
+lr <- lm(Calories~Protein+TotalFat+Carbohydrate+Sodium+Cholesterol, USDAclean)
+summary(lr)
+```
+
+```{r}
+# Linear Regression Equation:
+
+# Calories = 3.9882 + 3.9891 * Protein + 8.7716 * TotalFat + 3.7432 * Carbohydrate + 0.0003 * Sodium + 0.011 * Cholesterol
+```
+
+```{r}
+
+# "Sodium" is the least significant independent variable. Because its p-value is greater than 0.05, showing the least significant effect on dependent variable. 
+```
+
+#### 2. Predict the calories of a new product with the following data:                                                  Protein=0.1, TotalFat=35, Carbohydrate=405, Sodium=440, Cholesterol=70, Sugar=NA, Calcium=35, Iron=NA, Potassium=35, VitaminC=10,	VitaminE=NA, VitaminD=NA.                                                                                                         
+```{r}
+# INSERT YOUR CODE HERE.
+
+new <- data.frame(Protein=0.1, TotalFat=35,Carbohydrate=405, Sodium=440, Cholesterol=70)
+predict1 <- predict(lr,new)
+predict1
+```
+
+
+
