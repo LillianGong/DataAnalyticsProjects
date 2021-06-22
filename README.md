@@ -1,17 +1,22 @@
 # Data Analytics Projects
 
+
 ## Data Modeling in Python:
 ### Customer Lifetime Value (CLV) Calculation based on RFM
 ### Prediction on Credit Risk
 
+
 ## Data Cleaning and Modeling in R:
 ### Linear Regression in R
+
 
 ## Data Cleaning in SAS:
 ### Data Preparation in SAS
 
+
 ## Data Queries: 
 ### SQLlite Queries on the Dataset of a Digital Music Store
+
 
 ## data
 ### online_clean.csv - Customer Lifetime Value (CLV) Calculation based on RFM
