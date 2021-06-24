@@ -123,8 +123,9 @@ pairs(~Calories+Protein+TotalFat+Carbohydrate+Sodium+Cholesterol,data=USDAclean,
 #### 2. Check if the correlation between Calories and Total Fat statistically significant? 
 ```{r}
 
-cor.test(df$Calories,df$TotalFat)
+cor.test(USDAclean$Calories,USDAclean$TotalFat)
 # yes, the correlation is statistically significant. Because the cor is 0.8 which indicates a strong positive correlation (close to 1),and p-value is much less than 0.05.
+
 ```
 
 Data Modeling
@@ -140,11 +141,9 @@ summary(lr)
 # Linear Regression Equation:
 
 # Calories = 3.9882 + 3.9891 * Protein + 8.7716 * TotalFat + 3.7432 * Carbohydrate + 0.0003 * Sodium + 0.011 * Cholesterol
-```
-
-```{r}
 
 # "Sodium" is the least significant independent variable. Because its p-value is greater than 0.05, showing the least significant effect on dependent variable. 
+
 ```
 
 #### 2. Predict the calories of a new product with the following data:                                                  Protein=0.1, TotalFat=35, Carbohydrate=405, Sodium=440, Cholesterol=70, Sugar=NA, Calcium=35, Iron=NA, Potassium=35, VitaminC=10,	VitaminE=NA, VitaminD=NA.                                                                                                         
